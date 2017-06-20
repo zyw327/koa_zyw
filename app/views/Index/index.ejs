@@ -1,0 +1,18 @@
+
+	<div class='container-fluid'>
+		<div class="row">
+			<div style='padding: 0 0;' class="col-xs-12">
+				<div class="panel panel-default">
+				  <div class="panel-heading">置顶板</div>
+				  <div class="panel-body">
+				  <% for (list of bloglist){ %>
+				  	<% if (list.issystem){ %>
+				  	<p title="<%=list['title'] %>" style="overflow:hidden;text-overflow:ellipsis;white-space: nowrap;"><span style="color:red;" class="glyphicon glyphicon-arrow-up"></span>[置顶] <a href="/index/index/detail?id=<%= list['id'] %>&type=blog&t=<%= list['createtime'] %>"><%= list.title %></a></p>
+				  	<% }else{ %>
+					<p title="<%= list['title'] %>" style="overflow:hidden;text-overflow:ellipsis;white-space: nowrap;"><span style="color:red;" class="glyphicon glyphicon-arrow-up"></span>[置顶] <a href="/blog/detail?uid=<%= list['aid'] %>&type=<%= list['user_mid'] %>&t=<%= list['createtime'] %>&bid=<%= list['id'] %>"><%= list.title %></a></p>
+					<% } %>
+				  <% } %>
+				  </div>
+				</div>
+			</div>
+		</div>

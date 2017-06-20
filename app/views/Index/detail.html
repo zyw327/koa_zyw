@@ -1,0 +1,20 @@
+<%- include('../public/header', {title: "起航博客"}) %>
+<%- include('../public/nav')%>
+<div class="container-fluid">
+    <div class='row'>
+        <div class="col-xs-12">
+            <form action='/index/test' method="post">
+                <div>
+                    <label>用户名：</label>
+                    <input value="" name='account' >
+                </div>
+                <div>
+                    <label>密码：</label>
+                    <input value="" name='passwd' >
+                </div>
+                <div><button type="submit">提交</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+<%- include('../public/footer')%>
