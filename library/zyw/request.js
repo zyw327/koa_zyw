@@ -1,9 +1,22 @@
+/**
+ * Request
+ */
 class Request {
-    constructor(req){
+    /**
+     * 构造函数初始化
+     * @param {Object} req
+     */
+    constructor(req) {
         this.req = req;
     }
 
-    get(key, defaultValue){
+    /**
+     * 获取get传递的参数
+     * @param {String} key
+     * @param {String} defaultValue
+     * @return {String}
+     */
+    get(key, defaultValue) {
         if (!this.req.query) {
             return defaultValue;
         }
@@ -16,7 +29,13 @@ class Request {
         return defaultValue;
     }
 
-    post(key, defaultValue){
+    /**
+     * 获取post传递的参数
+     * @param {String} key
+     * @param {String} defaultValue
+     * @return {String}
+     */
+    post(key, defaultValue) {
         if (!this.req.body) {
             return defaultValue;
         }
