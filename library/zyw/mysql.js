@@ -1,8 +1,14 @@
-var Select = require("./select");
-
-class Mysql extends Select{
-	constructor(){
-		super();
+const Select = require('./select');
+/**
+ * 数据库CURD
+ */
+class Mysql extends Select {
+	/**
+	 * 构造函数
+	 * @param {Object} config 配置
+	 */
+	constructor(config) {
+		super(config);
 	}
 
 	/**
@@ -11,7 +17,7 @@ class Mysql extends Select{
 	 * @param  {[Object]} data  [{field:value}]
 	 * @return {[type]}       [description]
 	 */
-	insert(table, data){
+	insert(table, data) {
 		this._init();
 		let insertStr = '';
 		if (data && (data instanceof Array)) {
@@ -20,7 +26,7 @@ class Mysql extends Select{
 			let tmp = this._parseOneInsetData(data);
 			insertStr = tmp[0] + tmp[1];
 		}
-		this.sql = "INSERT INTO " + table + " " + insertStr;
+		this.sql = 'INSERT INTO ' + table + ' ' + insertStr;
 		return this;
 	}
 
@@ -29,26 +35,34 @@ class Mysql extends Select{
 	 * @param  {[type]} data [description]
 	 * @return {[type]}      [description]
 	 */
-	_parseOneInsetData(data){
+	_parseOneInsetData(data) {
 		let fields = '';
 		let values = '';
-		for(var key in data){
-			fields += key + ",";
-			values += "'" + data[key] + "',"
+		for (let key in data) {
+			if (data.hasOwnProperty(key)) {
+				fields += key + ',';
+				values += '\'' + data[key] + '\',';
+			}
 		}
 		fields = fields.substr(0, fields.length - 1);
 		values = values.substr(0, values.length - 1);
-		return ["(" + fields + ")values", "(" + values + ")"];
+		return ['(' + fields + ')values', '(' + values + ')'];
 	}
 
-	_parseMutiInsetData(data){
+	/**
+	 * 解析多条插入
+	 * @param {Object|Array} data
+	 * @return {String}
+	 */
+	_parseMutiInsetData(data) {
 		let fields = '';
 		let values = '';
-
-		for(var i in data){
-			let tmp = this._parseOneInsetData(data[i]);
-			fields = tmp[0];
-			values += tmp[1] + ",";
+		for (let i in data) {
+			if (data.hasOwnProperty(i)) {
+				let tmp = this._parseOneInsetData(data[i]);
+				fields = tmp[0];
+				values += tmp[1] + ',';
+			}
 		}
 
 		return fields + values.substr(0, values.length - 1);
@@ -61,20 +75,22 @@ class Mysql extends Select{
 	 * @param  {[type]} cond  [description]
 	 * @return {[type]}       [description]
 	 */
-	update(table, data){
+	update(table, data) {
 		this._init();
 		let set = '';
-		for(var key in data) {
-			set += key + "='" + data[key] + "',";
+		for (let key in data) {
+			if (data.hasOwnProperty(key)) {
+				set += key + '=\'' + data[key] + '\',';
+			}
 		}
 		set = set.substr(0, set.length - 1);
-		this.sql = "UPDATE " + table + " SET " + set;
+		this.sql = 'UPDATE ' + table + ' SET ' + set;
 		return this;
 	}
 
-	_parseUpdateData(data){
+	// _parseUpdateData(data) {
 
-	}
+	// }
 
 	/**
 	 * [delete description]
@@ -82,14 +98,18 @@ class Mysql extends Select{
 	 * @param  {[type]} cond  [description]
 	 * @return {[type]}       [description]
 	 */
-	delete(table, cond){
+	delete(table, cond) {
 		this._init();
-		//let where = this._parseWhere(cond);
-		this.sql = "DELETE FROM " + table;
+		// let where = this._parseWhere(cond);
+		this.sql = 'DELETE FROM ' + table;
 		return this;
 	}
 
-	save(){
+	/**
+	 * 执行插入更新删除
+	 * @return {Promise}
+	 */
+	save() {
 		this.__toString();
 		return new Promise((resolve, reject)=>{
 			this.query(this.sql).then((results)=>{

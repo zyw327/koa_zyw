@@ -1,13 +1,28 @@
-class Response{
-    constructor(res){
+/**
+ * 响应
+ */
+class Response {
+    /**
+     * 构造函数初始化
+     * @param {Object} res
+     */
+    constructor(res) {
         this.res = res;
     }
 
-    redirect(url){
+    /**
+     * 重定向
+     * @param {String} url
+     */
+    redirect(url) {
 
     }
 
-    json(json){
+    /**
+     * 输出json
+     * @param {Object} json
+     */
+    json(json) {
         this.res.body = JSON.stringify(json);
     }
 }

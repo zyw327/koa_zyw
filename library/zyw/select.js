@@ -1,8 +1,15 @@
-var config = require("../../app/config/config");
-
-class Select{
-	constructor(){
-		this.db = config("mysql");
+// const mysql = require('mysql');
+const Connection = require('./mysql/connection');
+/**
+ * 数据查询封装
+ */
+class Select {
+	/**
+	 * 构造函数
+	 * @param {Object} config db配置
+	 */
+	constructor(config) {
+		this.db = this.createDb(config);
 		this.sql = '';
 		this.wheres = '';
 		this.joins = '';
@@ -12,7 +19,31 @@ class Select{
 		this.limits = '';
 	}
 
-	_init(){
+	/**
+	 * 创建db操作
+	 * @param {Object} config 配置
+	 * @return {Pool}
+	 */
+	createDb(config) {
+		if (!this.db) {
+			let connection = new Connection(config);
+			return connection.get();
+		}
+		// return mysql.createPool({
+		// 	connectionLimit: config.connectionLimit,
+		// 	host: config.host,
+		// 	user: config.user,
+		// 	password: config.password,
+		// 	database: config.database,
+		// 	debug: config.debug,
+		// 	multipleStatements: config.multipleStatements
+		// });
+	}
+
+	/**
+	 * 初始化
+	 */
+	_init() {
 		this.sql = '';
 		this.wheres = '';
 		this.joins = '';
@@ -22,7 +53,12 @@ class Select{
 		this.limits = '';
 	}
 
-	query(sql){
+	/**
+	 * 执行
+	 * @param {String} sql
+	 * @return {Promise}
+	 */
+	query(sql) {
 		return new Promise((resolve, reject) => {
 			this.db.query(sql, (error, result, fields) => {
 				if (error) {
@@ -34,28 +70,34 @@ class Select{
 		});
 	}
 
-	select(table, fields){
+	/**
+	 * 查询语句
+	 * @param {String} table
+	 * @param {String|Array} fields
+	 * @return {Select}
+	 */
+	select(table, fields) {
 		this._init();
 		if (fields instanceof Array) {
-			fields = fields.join(",");
+			fields = fields.join(',');
 		} else if (!fields) {
-			 fields = "*";
+			fields = '*';
 		}
-		this.sql = "select " + fields + " {%s} " + " from " + table;
+		this.sql = 'select ' + fields + ' {%s} ' + ' from ' + table;
 		return this;
 	}
 
 	/**
 	 * [join description]
-	 * @param  {[String]} joinTable [description]
-	 * @param  {[array|String]} jonFields [description]
-	 * @param  {[String]} joinWay   [option]:["LEFT", "RIGHT", "INNER"]
-	 * @param {[object]} [joinCond] {field:value,_logic:['=', 'and']}
-	 * @return {[type]}           [description]
+	 * @param  {String} joinTable [description]
+	 * @param  {array|String} joinFields [description]
+	 * @param  {String} joinWay   [option]:['LEFT', 'RIGHT', 'INNER']
+	 * @param {object} [joinCond] {field:value,_logic:['=', 'and']}
+	 * @return {type}           [description]
 	 */
-	join(joinTable, joinFields, joinWay, joinCond){
-		joinFields = joinFields || "";
-		this.joins += " " + joinWay + " JOIN " + joinTable + " ON " ;
+	join(joinTable, joinFields, joinWay, joinCond) {
+		joinFields = joinFields || '';
+		this.joins += ' ' + joinWay + ' JOIN ' + joinTable + ' ON ';
 		let tmp = this._parseWhere(joinCond, true);
 		let countCand = 0;
 		if (joinCond instanceof Array) {
@@ -64,9 +106,9 @@ class Select{
 		} else {
 			tmp = tmp.substr(0, tmp.length - (joinCond._logic?(joinCond._logic[1]?joinCond._logic[1].length:3):3));
 		}
-		this.joins += " " + tmp;
+		this.joins += ' ' + tmp;
 		if (joinFields instanceof Array) {
-			joinFields = joinFields.join(",");
+			joinFields = joinFields.join(',');
 		}
 		this.joinFields += joinFields;
 		return this;
@@ -74,84 +116,124 @@ class Select{
 
 	/**
 	 * [where description]
-	 * @param  {[array|object]} cond {field:value,_logic:['=', 'and']}|[{field:value,_logic:['=', 'and']},{field:value,_logic:['=', 'and']}]
-	 * @param  {[type]}      [description]
-	 * @return {[type]}      [description]
+	 * @param  {array|object} cond {field:value,_logic:['=', 'and']}|[{field:value,_logic:['=', 'and']},{field:value,_logic:['=', 'and']}]
+	 * @param  {type}      [description]
+	 * @return {type}      [description]
 	 */
-	where(cond){
+	where(cond) {
 		this.wheres += this._parseWhere(cond);
 		return this;
 	}
 
-	_parseWhere(cond, isJoin){
+	/**
+	 * 解析Where条件
+	 * @param {Object} cond
+	 * @param {Boolean} isJoin
+	 * @return {String}
+	 */
+	_parseWhere(cond, isJoin) {
 		let tmpStr = '';
 		if (!(cond instanceof Array)) {
 			tmpStr += this._parseWhereObj(cond, isJoin);
 		} else {
-			tmpStr += " (";
-			for (var i in cond) {
-				tmpStr += this._parseWhereObj(cond[i], isJoin);
+			tmpStr += ' (';
+			for (let i in cond) {
+				if (cond.hasOwnProperty(i)) {
+					tmpStr += this._parseWhereObj(cond[i], isJoin);
+				}
 			}
 			tmpStr = tmpStr.substr(0, tmpStr.length - (cond[i]._logic ? (cond[i]._logic[1] ? cond[i]._logic[1].length : 3) : 3));
-			tmpStr += ") " + (cond[i]._logic ? (cond[i]._logic[1] ? cond[i]._logic[1] : "AND") : "AND");
+			tmpStr += ') ' + (cond[i]._logic ? (cond[i]._logic[1] ? cond[i]._logic[1] : 'AND') : 'AND');
 		}
 		return tmpStr;
 	}
 
-	_parseWhereObj(cond, isJoin){
+	/**
+	 * 解析where条件
+	 * @param {Object} cond
+	 * @param {Boolean} isJoin
+	 * @return {String}
+	 */
+	_parseWhereObj(cond, isJoin) {
 		isJoin = isJoin || false;
 		let tmpStr = '';
-		for (var key in cond) {
-			if (key != "_logic") {
-				tmpStr += " " + key + " " + (cond._logic ? (cond._logic[0] ? cond._logic[0] : "=") : "=");
-				tmpStr += " " + (isJoin?cond[key]:this.db.escape(cond[key])) + " " + (cond._logic ? (cond._logic[1] ? cond._logic[1] : "AND") : "AND");
+		for (let key in cond) {
+			if (key != '_logic') {
+				tmpStr += ' ' + key + ' ' + (cond._logic ? (cond._logic[0] ? cond._logic[0] : '=') : '=');
+				if (cond._logic && cond._logic[0] && cond._logic[0].toLowerCase() == 'in') {
+					tmpStr += ' ' + (isJoin?cond[key]: '(' + cond[key] + ')') + ' ' + (cond._logic ? (cond._logic[1] ? cond._logic[1] : 'AND') : 'AND');
+				} else {
+					tmpStr += ' ' + (isJoin?cond[key]: this.db.escape(cond[key]) ) + ' ' + (cond._logic ? (cond._logic[1] ? cond._logic[1] : 'AND') : 'AND');
+				}
 			}
 		}
 		return tmpStr;
 	}
 
-	limit(offset, count){
+	/**
+	 * limit
+	 * @param {Number} offset
+	 * @param {Number} count
+	 * @return {Select}
+	 */
+	limit(offset, count) {
 		this.limits = offset + ', ' + count;
 		return this;
 	}
 
-	order(orders){
+	/**
+	 * 排序
+	 * @param {String} orders
+	 * @return {Select}
+	 */
+	order(orders) {
 		this.orders = orders;
 		return this;
 	}
 
-	group(groups){
+	/**
+	 * 分组
+	 * @param {String} groups
+	 * @return {Select}
+	 */
+	group(groups) {
 		this.groups = groups;
 		return this;
 	}
 
-	__toString(){
+	/**
+	 * 生成Sql
+	 * @return {String}
+	 */
+	__toString() {
 		if (this.joinFields != '') {
-			this.sql = this.sql.replace("{%s}", "," + this.joinFields);
+			this.sql = this.sql.replace('{%s}', ',' + this.joinFields);
 		} else {
-			this.sql = this.sql.replace("{%s}", "");
+			this.sql = this.sql.replace('{%s}', '');
 		}
-		
 		this.sql += this.joins;
 		if (this.wheres) {
-			this.sql += " where " + this.wheres.substr(0, this.wheres.length - 3);
+			this.sql += ' where ' + this.wheres.substr(0, this.wheres.length - 3);
 		}
 
 		if (this.orders) {
-			this.sql += " order by " + this.orders;
+			this.sql += ' order by ' + this.orders;
 		}
 
 		if (this.groups) {
-			this.sql += " group by " + this.groups;
+			this.sql += ' group by ' + this.groups;
 		}
 
 		if (this.limits) {
-			this.sql += " limit " + this.limits;
+			this.sql += ' limit ' + this.limits;
 		}
 		return this.sql;
 	}
-
-	featchOne(){
+	/**
+	 * 取得一条数据
+	 * @return {Promise}
+	 */
+	featchOne() {
 		this.limit(0, 1);
 		this.__toString();
 		return new Promise((resolve, reject)=>{
@@ -163,7 +245,11 @@ class Select{
 		});
 	}
 
-	featchAll(){
+	/**
+	 * 取得所有数据
+	 * @return {Promise}
+	 */
+	featchAll() {
 		this.__toString();
 		return new Promise((resolve, reject)=>{
 			this.query(this.sql).then((results) => {
@@ -174,9 +260,53 @@ class Select{
 		});
 	}
 
-	close(){
+	/**
+	 * 事务开启
+	 * @return {Promise}
+	 */
+	beginTransaction() {
+		return new Promise((resolve, reject) => {
+			this.db.beginTransaction(function(err) {
+				if (err) {
+					return reject(err);
+				}
+				resolve(true);
+			});
+		});
+	}
+
+	/**
+	 * 事务提交
+	 * @return {Promise}
+	 */
+	commit() {
+		return new Promise((resolve, reject) => {
+			this.db.commit(function(err) {
+				if (err) {
+					return reject(err);
+				}
+				resolve(true);
+			});
+		});
+	}
+
+	/**
+	 * 事务回滚
+	 * @return {Promise}
+	 */
+	rollBack() {
+		return new Promise((resolve, reject) => {
+			resolve(1);
+			this.db.rollback();
+		});
+	}
+
+	/**
+	 * 关闭连接
+	 */
+	close() {
 		pool.end((err)=>{
-		  console.log(err);
+			console.log(err);
 		});
 	}
 }
