@@ -1,2 +1,2 @@
-nimcache/
-app/config/
+nimcache/*
+app/config/*
