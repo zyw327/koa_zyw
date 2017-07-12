@@ -1,20 +1,45 @@
 {
-  "name": "blog",
+  "name": "waitting",
   "version": "1.0.0",
-  "description": "",
+  "description": "接待管理系统",
   "main": "./public/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./public/index.js"
   },
-  "author": "",
+  "keywords": [
+    "waitting"
+  ],
+  "author": "zyw",
   "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.23.0",
+    "eslint": "^4.0.0",
+    "eslint-config-google": "^0.8.0",
+    "eslint-plugin-react": "^7.1.0"
+  },
   "dependencies": {
-    "koa": "^2.2.0",
+    "ava": "^0.20.0",
+    "babel": "^6.23.0",
+    "babel-core": "^6.18.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-3": "^6.17.0",
+    "babel-register": "^6.24.1",
+    "babel-runtime": "^6.18.0",
+    "bluebird": "^3.4.6",
+    "keygrip": "^1.0.1",
+    "koa": "^2.3.0",
     "koa-body": "^2.1.0",
-    "koa-ejs": "^4.0.0",
+    "koa-cors": "0.0.16",
+    "koa-ejs": "^4.0.1",
     "koa-router": "^7.2.1",
+    "koa-session": "^5.4.0",
     "koa-static": "^3.0.0",
     "koa-views": "^6.0.2",
-    "mysql": "^2.13.0"
+    "mysql": "^2.13.0",
+    "redis": "^2.7.1"
   }
 }

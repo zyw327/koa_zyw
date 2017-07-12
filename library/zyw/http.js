@@ -24,7 +24,7 @@ class Http {
 	 * @param {Object} [params] {key:value}
 	 */
 	setParams(params) {
-		this.params = queryString.stringify(params);
+		this.params = params;
 	}
 
 	/**
@@ -101,8 +101,14 @@ class Http {
 				options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 			}
 			options.path = this.urlPath;
+			if (this.params instanceof Object && this.parseContentType(options.headers['Content-Type']) == 'json') {
+				this.params = JSON.stringify(this.params);
+			} else {
+				this.params = queryString.stringify(this.params);
+			}
 			options.headers['Content-Length'] = Buffer.byteLength(this.params);
 		} else {
+			this.params = queryString.stringify(this.params);
 			options.path = this.urlPath + '?' + this.params;
 		}
 		return new Promise((resolve, reject)=>{
@@ -111,14 +117,30 @@ class Http {
 					resolve(chunk.toString());
 				});
 			}).catch((msg)=>{
+				console.log(err);
 				reject(msg);
 			});
 			this._requestStatus().then((err)=>{
+				console.log(err);
 				reject(err);
 			});
 		});
 	}
 
+	/**
+	 * 解析请求头
+	 * @param {String} contentType
+	 * @return {String}
+	 */
+	parseContentType(contentType) {
+		if (/(json)/.test(contentType)) {
+			return 'json';
+		} else if (/(x-www-form-urlencoded)/.test(contentType)) {
+			return 'form';
+		} else {
+			return 'raw';
+		}
+	}
 	/**
 	 * 获取响应
 	 * @param {Object} res
