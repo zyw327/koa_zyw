@@ -47,6 +47,14 @@ class Request {
         }
         return defaultValue;
     }
+
+    /**
+     * 获取客户端ip
+     * @return {String}
+     */
+    getIp() {
+        return this.req.ip;
+    }
 }
 
 module.exports = Request;

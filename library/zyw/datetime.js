@@ -1,13 +1,18 @@
-const date = new Date();
-
 /**
  * 日期时间出来函数
  */
 class DateTime {
     /**
      * 构造函数
+     * @param {String|Number} times
      */
-    constructor() {
+    constructor(times) {
+        times = times || 0;
+        if (times) {
+            this.date = new Date(times);
+        } else {
+            this.date = new Date();
+        }
         this.now = this.getYear() + '-' + this.getMonth() + '-' + this.getDay() + ' ' + this.getHours() + ':' + this.getMinutes() + ':' + this.getSeconds();
     }
 
@@ -16,7 +21,7 @@ class DateTime {
      * @return {String}
      */
     getYear() {
-        return date.getFullYear();
+        return this.date.getFullYear();
     }
 
     /**
@@ -24,7 +29,7 @@ class DateTime {
      * @return {String}
      */
     getMonth() {
-        let month = (date.getMonth() + 1).toString();
+        let month = (this.date.getMonth() + 1).toString();
         if (month.length < 2) {
             month = '0' + month;
         }
@@ -36,7 +41,7 @@ class DateTime {
      * @return {String}
      */
     getDay() {
-        let day = date.getDate().toString();
+        let day = this.date.getDate().toString();
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -47,7 +52,7 @@ class DateTime {
      * @return {String}
      */
     getHours() {
-        let hours = date.getHours().toString();
+        let hours = this.date.getHours().toString();
         if (hours.length < 2) {
             hours = '0' + hours;
         }
@@ -58,7 +63,7 @@ class DateTime {
      * @return {String}
      */
     getMinutes() {
-        let minutes = date.getMinutes().toString();
+        let minutes = this.date.getMinutes().toString();
         if (minutes.length < 2) {
             minutes = '0' + minutes;
         }
@@ -70,7 +75,7 @@ class DateTime {
      * @return {String}
      */
     getSeconds() {
-        let seconds = date.getSeconds().toString();
+        let seconds = this.date.getSeconds().toString();
         if (seconds.length < 2) {
             seconds = '0' + seconds;
         }
