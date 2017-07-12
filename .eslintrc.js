@@ -11,5 +11,5 @@ module.exports = {
         "new-cap": [2, {"newIsCap":true,"capIsNew":false}],
         "comma-dangle": [0,"always-multiline"],
         'generator-star-spacing': 1
-    }
+    },
 };
