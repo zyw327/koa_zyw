@@ -1,4 +1,5 @@
 # koa_zyw
+##支持node 6.9.2
 ## 基于koa的mvc设计
 
 ## request操作类
