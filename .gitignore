@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 nimcache/*
 app/config/*
+=======
+node_modules
+>>>>>>> ce57a9938c98b357f47909e28258e3cf4006f96a
