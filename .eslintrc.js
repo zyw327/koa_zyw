@@ -12,5 +12,4 @@ module.exports = {
         "comma-dangle": [0,"always-multiline"],
         'generator-star-spacing': 1
     },
-    "parser": "babel-eslint"
 };
