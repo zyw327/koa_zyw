@@ -20,7 +20,7 @@ class Controller {
      * 初始化
      */
     _init() {
-
+        return true;
     }
 
     /**
@@ -97,6 +97,14 @@ class Controller {
      */
     getUrl() {
         return this.ctx.url;
+    }
+
+    /**
+     * next
+     * @param {String} msg 
+     */
+    async next(msg) {
+        await this.next(msg);
     }
 }
 module.exports = Controller;
