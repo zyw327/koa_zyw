@@ -114,8 +114,24 @@ class App {
         this.parseUrl(url);
         let Controller = require('../../app/controller/' + this.controller() + 'Controller');
         let controller = new Controller(ctx, next, this.controller() + '/' + this.action());
-        await controller._init();
-        await controller[this.action()]();
+        let res = await controller._init();
+        if (!controller[this.action()]) {
+            ctx.response.set('Content-Type', 'application/json');
+            ctx.response.status = 404;
+            ctx.response.body = {code: 404, msg: '你访问的资源不存在！'};
+            return;
+        }
+        if (res) {
+            try {
+                await controller[this.action()]();
+            } catch (e) {
+                console.log(e);
+                ctx.response.set('Content-Type', 'application/json');
+                ctx.response.status = 500;
+                ctx.response.body = {code: 500, msg: '你访问的服务出现问题', debug: e.message};
+                return;
+            }
+        }
     }
 }
 module.exports = App;

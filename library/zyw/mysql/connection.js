@@ -31,12 +31,12 @@ class Connection {
     get() {
         return mysql.createConnection({
             connectionLimit: this.config.connectionLimit,
-			host: this.config.host,
-			user: this.config.user,
-			password: this.config.password,
-			database: this.config.database,
-			debug: this.config.debug,
-			multipleStatements: this.config.multipleStatements
+            host: this.config.host,
+            user: this.config.user,
+            password: this.config.password,
+            database: this.config.database,
+            debug: this.config.debug,
+            multipleStatements: this.config.multipleStatements
         });
     }
 }
