@@ -26,20 +26,19 @@ class Select {
      */
     createDb(config) {
         if (!this.db) {
-            let connection = new Connection(config);
-            return connection.get();
+            let connection = Connection(config);
+            return connection;
+            // return connection.get();
         }
-        // return mysql.createPool({
-        // connectionLimit: config.connectionLimit,
-        // host: config.host,
-        // user: config.user,
-        // password: config.password,
-        // database: config.database,
-        // debug: config.debug,
-        // multipleStatements: config.multipleStatements
-        // });
     }
 
+    /**
+     * 设置db
+     * @param {Object} db
+     */
+    setDb(db) {
+        this.db = db;
+    }
     /**
      * 初始化
      */
@@ -263,11 +262,12 @@ class Select {
 
     /**
      * 事务开启
+     * @param {Object} db 数据库操作对象
      * @return {Promise}
      */
-    beginTransaction() {
+    beginTransaction(db) {
         return new Promise((resolve, reject) => {
-            this.db.beginTransaction(function(err) {
+            db.beginTransaction(function(err) {
                 if (err) {
                     return reject(err);
                 }
@@ -278,11 +278,12 @@ class Select {
 
     /**
      * 事务提交
+     * @param {Object} db 数据库操作对象
      * @return {Promise}
      */
-    commit() {
+    commit(db) {
         return new Promise((resolve, reject) => {
-            this.db.commit(function(err) {
+            db.commit(function(err) {
                 if (err) {
                     return reject(err);
                 }
@@ -293,12 +294,13 @@ class Select {
 
     /**
      * 事务回滚
+     * @param {Object} db 数据库操作对象
      * @return {Promise}
      */
-    rollBack() {
+    rollBack(db) {
         return new Promise((resolve, reject) => {
             resolve(1);
-            this.db.rollback();
+            db.rollback();
         });
     }
 
@@ -308,6 +310,25 @@ class Select {
     close() {
         pool.end((err)=>{
             console.log(err);
+        });
+    }
+
+    /**
+     * 获取连接
+     */
+    /**
+     * 获取连接句柄
+     * @return {Mysql}
+     */
+    getDb() {
+        let pool = this.db;
+        return new Promise((resolve, reject)=>{
+            pool.getConnection((err, conn)=>{
+                if (err) {
+                    return reject(err);
+                }
+                resolve(conn);
+            });
         });
     }
 }
