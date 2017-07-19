@@ -1,17 +1,5 @@
 const mysql = require('mysql');
-// const connection = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'me',
-//   password: 'secret',
-//   database: 'my_db'
-// });
-// connection.connect();
-// connection.query('SELECT 1 + 1 AS solution', function(error, results, fields) {
-//   if (error) throw error;
-//   connection.release();
-//   console.log('The solution is: ', results[0].solution);
-// });
-// connection.end();
+let conn = undefined;
 /**
  * 数据库连接
  */
@@ -25,11 +13,11 @@ class Connection {
     }
 
     /**
-     * 获取连接句柄
-     * @return {Mysql}
+     * 获取连接池
+     * @return {Promise}
      */
-    get() {
-        return mysql.createConnection({
+    getPools() {
+        let pool = mysql.createPool({
             connectionLimit: this.config.connectionLimit,
             host: this.config.host,
             user: this.config.user,
@@ -38,7 +26,13 @@ class Connection {
             debug: this.config.debug,
             multipleStatements: this.config.multipleStatements
         });
+        return pool;
     }
 }
 
-module.exports = Connection;
+module.exports = function(config) {
+    if (!conn) {
+         conn = new Connection(config).getPools();
+    }
+    return conn;
+};
