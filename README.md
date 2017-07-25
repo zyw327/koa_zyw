@@ -10,44 +10,44 @@
 ## 配置文件
 ```json
     {
-        mysql: {
-            connectionLimit: 2,
-            host: 'host',
-            user: 'username',
-            password: 'password',
-            database: 'db',
-            debug: false,
-            multipleStatements: true
+        "mysql": {
+            "connectionLimit": 2,
+            "host": "host",
+            "user": "username",
+            "password": "password",
+            "database": "db",
+            "debug": false,
+            "multipleStatements": true
         },
-        mail: {
-            host: 'host',
-            port: 25,
-            secure: false, // upgrade later with STARTTLS
-            auth: {
-                user: 'email_addr',
-                pass: 'email_passwd'
+        "mail": {
+            "host": "host",
+            "port": 25,
+            "secure": false, // upgrade later with STARTTLS
+            "auth": {
+                "user": "email_addr",
+                "pass": "email_passwd"
             }
         },
-        server: {
-            port: '3005'
+        "server": {
+            "port": "3005"
         },
-        mongo: {
-            user: '',
-            password: '',
-            database: ''
+        "mongo": {
+            "user": "",
+            "password": "",
+            "database": ""
         },
-        redis: {
-            host: 'host',
-            port: '6379',
-            detect_buffers: false,
-            connect_timeout: 3600000,
-            retry_strategy: 5,
-            password: 'password',
-            db: '2'
+        "redis": {
+            "host": "host",
+            "port": "6379",
+            "detect_buffers": false,
+            "connect_timeout": 3600000,
+            "retry_strategy": 5,
+            "password": "password",
+            "db": "2"
         }
     };
 ```
-## 数据mysql连贯操作
+## 数据库mysql的连贯操作
 ```javascript
     let db = new Mysql(config.mysql);
 ```
