@@ -4,9 +4,14 @@
 
 ## request操作类
 ### get与post数据的获取<br>
-    <code>request().post(); // 获取post请求的数据</code><br>
-    <code>request().get(); // 获取get请求的数据</code>
+```javascript
+    request().post(); // 获取post请求的数据
+    request().get(); // 获取get请求的数据
+```
 ## response操作类
+```javascript
+    response().json(); //输出json到浏览器
+```
 ## 配置文件
 ```json
     {
@@ -22,7 +27,7 @@
         "mail": {
             "host": "host",
             "port": 25,
-            "secure": false, // upgrade later with STARTTLS
+            "secure": false,
             "auth": {
                 "user": "email_addr",
                 "pass": "email_passwd"
@@ -65,3 +70,6 @@
     }
 ```
 ## redis连接操作
+```javascript
+    redis = new RedisClient(config.redis);
+```
