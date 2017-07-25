@@ -23,7 +23,8 @@ class Response {
      * @param {Object} json
      */
     json(json) {
-        this.res.body = JSON.stringify(json);
+        this.res.set('Content-Type', 'application/json');
+        this.res.body = json;
     }
 }
 
