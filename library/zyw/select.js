@@ -1,5 +1,6 @@
 // const mysql = require('mysql');
 const Connection = require('./mysql/connection');
+const Transaction = require('./mysql/transaction');
 /**
  * 数据查询封装
  */
@@ -10,6 +11,7 @@ class Select {
      */
     constructor(config) {
         this.db = this.createDb(config);
+        this.transaction = Transaction(this.db);
         this.sql = '';
         this.wheres = '';
         this.joins = '';
@@ -26,9 +28,8 @@ class Select {
      */
     createDb(config) {
         if (!this.db) {
-            let connection = Connection(config);
+            let connection = Connection.pools(config);
             return connection;
-            // return connection.get();
         }
     }
 
@@ -57,7 +58,10 @@ class Select {
      * @param {String} sql
      * @return {Promise}
      */
-    query(sql) {
+    async query(sql) {
+        if (this.transaction.getIsInTransaction()) {
+            return await this.transaction.query(sql);
+        }
         return new Promise((resolve, reject) => {
             this.db.query(sql, (error, result, fields) => {
                 if (error) {
@@ -69,6 +73,24 @@ class Select {
         });
     }
 
+    /**
+     * 开启事务
+     */
+    async beginTransaction() {
+        await this.transaction.beginTransaction();
+    }
+    /**
+     * 开启事务
+     */
+    async commit() {
+        return await this.transaction.commit();
+    }
+    /**
+     * 开启事务
+     */
+    async rollBack() {
+        await this.transaction.rollBack();
+    }
     /**
      * 查询语句
      * @param {String} table
@@ -261,74 +283,11 @@ class Select {
     }
 
     /**
-     * 事务开启
-     * @param {Object} db 数据库操作对象
-     * @return {Promise}
-     */
-    beginTransaction(db) {
-        return new Promise((resolve, reject) => {
-            db.beginTransaction(function(err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(true);
-            });
-        });
-    }
-
-    /**
-     * 事务提交
-     * @param {Object} db 数据库操作对象
-     * @return {Promise}
-     */
-    commit(db) {
-        return new Promise((resolve, reject) => {
-            db.commit(function(err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(true);
-            });
-        });
-    }
-
-    /**
-     * 事务回滚
-     * @param {Object} db 数据库操作对象
-     * @return {Promise}
-     */
-    rollBack(db) {
-        return new Promise((resolve, reject) => {
-            resolve(1);
-            db.rollback();
-        });
-    }
-
-    /**
      * 关闭连接
      */
     close() {
         pool.end((err)=>{
             console.log(err);
-        });
-    }
-
-    /**
-     * 获取连接
-     */
-    /**
-     * 获取连接句柄
-     * @return {Mysql}
-     */
-    getDb() {
-        let pool = this.db;
-        return new Promise((resolve, reject)=>{
-            pool.getConnection((err, conn)=>{
-                if (err) {
-                    return reject(err);
-                }
-                resolve(conn);
-            });
         });
     }
 }

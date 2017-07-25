@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-let conn = undefined;
+let pools = undefined;
 /**
  * 数据库连接
  */
@@ -10,6 +10,21 @@ class Connection {
      */
     constructor(config) {
         this.config = config;
+    }
+
+    /**
+     * 获取连接
+     * @return {Promise}
+     */
+    getConnection() {
+        return new Promise((resolve, reject) => {
+            this.getPools().getConnection((err, conn) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(conn);
+            });
+        });
     }
 
     /**
@@ -29,10 +44,10 @@ class Connection {
         return pool;
     }
 }
-
-module.exports = function(config) {
-    if (!conn) {
-         conn = new Connection(config).getPools();
+exports.pools = (config) => {
+    if (!pools) {
+        pools = new Connection(config).getPools();
     }
-    return conn;
+    return pools;
 };
+
