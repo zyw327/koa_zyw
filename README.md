@@ -46,9 +46,11 @@
             db: '2'
         }
     };
+```
 ## 数据mysql连贯操作
 ```javascript
     let db = new Mysql(config.mysql);
+```
 ### mysql事务
 ```javascript
     try{
@@ -61,4 +63,5 @@
         await this.activity.db.rollBack();
         return false;
     }
+```
 ## redis连接操作
