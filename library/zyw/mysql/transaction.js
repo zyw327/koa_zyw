@@ -10,7 +10,7 @@ class Transaction {
      */
     constructor(pool) {
         this.pool = pool;
-        this.isInTransaction = true;
+        this.isInTransaction = false;
     }
     /**
      * 执行sql语句
