@@ -41,7 +41,7 @@ class Mysql extends Select {
         for (let key in data) {
             if (data.hasOwnProperty(key)) {
                 fields += key + ',';
-                values += '\'' + data[key] + '\',';
+                values += '' + this.escape(data[key]) + ',';
             }
         }
         fields = fields.substr(0, fields.length - 1);

@@ -55,6 +55,10 @@
 ## 数据库mysql的连贯操作
 ```javascript
     let db = new Mysql(config.mysql);
+    // joinWay可取值：INNER LEFT RIGHT
+    // where可以是对象，数组，[{id:1},{name: '%test%', _logic:['like', 'or']}]
+    // limit 偏移量，取得行数。
+    db.select(table, fields).join(table, fields, joinWay, condition).join(table, fields, joinWay).where({id: 1}).order('id desc').group('id').limit(1, 12);
 ```
 ### mysql事务
 ```javascript
