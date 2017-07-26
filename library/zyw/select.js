@@ -131,7 +131,11 @@ class Select {
         if (joinFields instanceof Array) {
             joinFields = joinFields.join(',');
         }
-        this.joinFields += joinFields;
+        if (/[^\s]{1,}/.test(joinFields)) {
+            this.joinFields += ',' + joinFields;
+        } else {
+            this.joinFields += joinFields;
+        }
         return this;
     }
 
@@ -229,7 +233,7 @@ class Select {
      */
     __toString() {
         if (this.joinFields != '') {
-            this.sql = this.sql.replace('{%s}', ',' + this.joinFields);
+            this.sql = this.sql.replace('{%s}', '' + this.joinFields);
         } else {
             this.sql = this.sql.replace('{%s}', '');
         }
@@ -255,7 +259,7 @@ class Select {
      * 取得一条数据
      * @return {Promise}
      */
-    featchOne() {
+    fetchOne() {
         this.limit(0, 1);
         this.__toString();
         return new Promise((resolve, reject)=>{
@@ -271,7 +275,7 @@ class Select {
      * 取得所有数据
      * @return {Promise}
      */
-    featchAll() {
+    fetchAll() {
         this.__toString();
         return new Promise((resolve, reject)=>{
             this.query(this.sql).then((results) => {
@@ -289,6 +293,23 @@ class Select {
         pool.end((err)=>{
             console.log(err);
         });
+    }
+
+    escape(value) {
+        if (!/[^\s]{1,}/.test(value)) {
+            return value;
+        }
+        value = this.db.escape(value);
+        // if (typeof(value) == 'string') {
+        //     value = value.replace(/(''){1,}/g, "");
+        // }
+        // console.log(value);
+        return value;
+        // if (typeof(value) == 'string') {
+        //     value = value.replace(/[\\]{1,}/g, "\\'");
+        //     value = value.replace(/[']{1,}/g, "\\'");
+        // }
+        // return value;
     }
 }
 
