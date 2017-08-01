@@ -69,7 +69,7 @@
         let res = await db.commit(); //返回执行结果插入会返回插入id
         return res;
     }catch(e) {
-        await this.activity.db.rollBack();
+        await db.rollBack();
         return false;
     }
 ```
