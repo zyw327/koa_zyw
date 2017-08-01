@@ -13,7 +13,6 @@ const config = require('../app/config/config');
 const render = require('../library/zyw/render');
 const convert = require('koa-convert');
 
-let application = new Application();
 app.use(convert(cors()));
 app.use(async function(ctx, next) {
   const start = new Date();
@@ -63,6 +62,7 @@ app.use(require('koa-static')(path.join(__dirname, './static'), {
 }));
 
 router.all('/*', async function(ctx, next) {
+  let application = new Application();
   await application.run(ctx, next);
 });
 
