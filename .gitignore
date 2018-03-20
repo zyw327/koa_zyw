@@ -1,1 +1,5 @@
+nimcache/
+app/config/
 node_modules
+.vscode
+.vscode/*
