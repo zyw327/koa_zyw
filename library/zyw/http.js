@@ -149,8 +149,12 @@ class Http {
 	_getResponse(res) {
 		return new Promise((resolve, reject)=>{
 			// res.setEncoding('utf8');
+			let rawData = '';
 			res.on('data', (chunk) => {
-				resolve(chunk);
+				rawData += chunk;
+			});
+			res.on('end', () => {
+				resolve(rawData);
 			});
 		});
 	}
