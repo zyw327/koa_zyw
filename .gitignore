@@ -1,5 +1,4 @@
-nimcache/
-app/config/
 node_modules
 .vscode
 .vscode/*
+package-lock.json
