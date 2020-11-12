@@ -7,7 +7,7 @@ const Application = require('../library/zyw/app');
 const koaBody = require('koa-body');
 const path = require('path');
 const cors = require('koa-cors');
-const config = require('../app/config/config');
+const config = require('../app/configs/config');
 // const views = require('koa-views');
 // const render = require('koa-ejs');
 const render = require('../library/zyw/render');
@@ -74,3 +74,5 @@ router.all('/*', async function(ctx, next) {
 
 app.use(router.routes());
 app.listen(config.server.port);
+
+console.log(`run in http://localhost:${config.server.port}`);

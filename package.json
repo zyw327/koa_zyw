@@ -1,20 +1,22 @@
 {
-  "name": "waitting",
+  "name": "koa-framework",
   "version": "1.0.0",
   "description": "koa_zyw框架",
   "main": "./public/index.js",
   "scripts": {
-    "test": "node ./public/index.js"
+    "test": "node ./public/index.js",
+    "dev": "nodemon ./public/index.js"
   },
   "keywords": [
-    "waitting"
+    "koa,okgoes"
   ],
   "author": "zyw",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^4.0.0",
     "eslint-config-google": "^0.8.0",
-    "eslint-plugin-react": "^7.1.0"
+    "eslint-plugin-react": "^7.1.0",
+    "nodemon": "^2.0.6"
   },
   "dependencies": {
     "ava": "^0.20.0",

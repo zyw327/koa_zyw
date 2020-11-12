@@ -1,5 +1,5 @@
 const Mysql = require('../../library/zyw/mysql.js');
-const config = require('../config/config');
+const config = require('../configs/config');
 /**
  * 表模型
  */
